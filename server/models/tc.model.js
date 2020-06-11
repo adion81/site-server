@@ -56,7 +56,7 @@ const UserSchema = new mongoose.Schema({
 const ToughChoiceSchema = new mongoose.Schema({
     title:{
         type: String,
-        requrired:[true,"Title is required."]
+        required:[true,"Title is required."]
     },
     active: {
         type: Boolean,

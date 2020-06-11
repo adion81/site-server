@@ -2,12 +2,29 @@ const {ToughChoice,User, Choice} = require("../models/tc.model");
 
 module.exports = {
     createToughChoice: (req,res) => {
-        ToughChoice.create(req.body)
-            .then(tc => res.json(tc))
-            .catch(err => res.json(err))
+        ToughChoice.findOne({title:req.body.title})
+            .then(tc => {
+                console.log("This doesn't something", tc);
+                if(tc){
+                    console.log("IT already exists")
+                    res.json({msg:"exists"})
+
+                }
+                else{
+                    console.log("THis is body:" + req.body)
+                    ToughChoice.create(req.body)
+                        .then(tc => {
+                            console.log("This is new tough choice", + tc);
+                            res.json(tc)
+                        })
+                        .catch(err => res.json(err))
+
+                }
+            })
+            .catch(err => res.json(err));
     },
     showToughChoice: (req,res) => {
-        ToughChoice.findById(req.params.id)
+        ToughChoice.findOne({title:req.params.title})
             .then(tc => res.json(tc))
             .catch(err => res.json(err))
     },
@@ -18,13 +35,13 @@ module.exports = {
             
     },
     addUser: (req,res) => {
-        ToughChoice.findById(req.params.id)
+        ToughChoice.findOne({title:req.params.title})
             .then(tc => {
                 if(tc.active){
                     
                     User.create(req.body)
                         .then(newUser => {
-                            ToughChoice.findByIdAndUpdate(req.params.id,{$push:{users:newUser}})
+                            ToughChoice.findOneAndUpdate({title:req.params.title},{$push:{users:newUser}})
                                 .then(updated =>  res.json({tc:updated,userId:newUser._id}))
                                 .catch(err => res.json(err))
                         })
@@ -35,8 +52,7 @@ module.exports = {
             .catch(err => res.json(err))
     },
     updateUser: (req,res) => {
-        console.log("USER ID: ", req.params.userId);
-        console.log("TC ID: ", req.params.tcId);
+        
         console.log(req.body)
         Choice.create(req.body.choice)
             .then(choice => {
@@ -46,11 +62,11 @@ module.exports = {
                 User.findByIdAndUpdate(req.params.userId,updated,{useFindAndModify:false})
                     .then(updatedUser => {
                         console.log("Made it into heer");
-                        ToughChoice.findByIdAndUpdate({_id: req.params.tcId},{$pull:{users:{_id: updatedUser._id}}})
+                        ToughChoice.findOneAndUpdate({title: req.params.title},{$pull:{users:{_id: updatedUser._id}}})
                             .then(tc => {
                                 User.findById(updatedUser._id)
                                     .then(user => {
-                                        ToughChoice.findByIdAndUpdate({_id: req.params.tcId},{$push:{users:user}})
+                                        ToughChoice.findOneAndUpdate({title: req.params.title},{$push:{users:user}})
                                             .then(tc => resjson(tc))
                                             .catch(err => res.json(err))
 

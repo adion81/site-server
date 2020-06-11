@@ -4,5 +4,9 @@ module.exports = (io) => {
             console.log("Coming from client", data.id)
             io.emit(`update-tc`,{id: data.id})
         })
+        socket.on("updated-user", data => {
+            console.log("Coming from client", data.id)
+            io.emit("update-tc",{id:data.id})
+        })
     })
 }
