@@ -62,11 +62,11 @@ module.exports = {
                 User.findByIdAndUpdate(req.params.userId,updated,{useFindAndModify:false})
                     .then(updatedUser => {
                         console.log("Made it into heer");
-                        ToughChoice.findOneAndUpdate({title: req.params.title},{$pull:{users:{_id: updatedUser._id}}})
+                        ToughChoice.findOneAndUpdate({title: req.params.title},{$pull:{users:{_id: updatedUser._id}}},{useFindAndModify:false})
                             .then(tc => {
                                 User.findById(updatedUser._id)
                                     .then(user => {
-                                        ToughChoice.findOneAndUpdate({title: req.params.title},{$push:{users:user}})
+                                        ToughChoice.findOneAndUpdate({title: req.params.title},{$push:{users:user}},{useFindAndModify:false})
                                             .then(tc => resjson(tc))
                                             .catch(err => res.json(err))
 
