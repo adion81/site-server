@@ -6,6 +6,6 @@ const express = require("express"),
     io = require("socket.io")(server);
 
 
-app.use(cors());
+app.use(cors({"origin":"http://18.216.108.30"}));
 
 require("./server/controllers/tcSocket.controller")(io);
