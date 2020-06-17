@@ -78,5 +78,10 @@ module.exports = {
                     .catch(err => res.json(err))
             })
             .catch(err => console.log(err));
+    },
+    deactivate: (req,res) => {
+        ToughChoice.findOneAndUpdate({title:req.params.title},{active: false})
+            .then(tc => res.json(tc))
+            .catch(err => res.json(err));
     }
 }
